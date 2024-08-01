@@ -1,31 +1,31 @@
 package org.example.proyectou.service;
 
 import org.example.proyectou.model.User;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class FileService {
-    private final String filePath = "users.json";
-    private final ObjectMapper mapper = new ObjectMapper();
+    private static final String FILE_NAME = "users.ser";
 
     public List<User> readUsersFromFile() throws IOException {
-        File file = new File(filePath);
-        if (!file.exists()) {
-            file.createNewFile();
-            return new ArrayList<>();  // Devuelve una lista mutable
+        List<User> users = new ArrayList<>();
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(FILE_NAME))) {
+            users = (List<User>) ois.readObject();
+        } catch (FileNotFoundException e) {
+            // Si el archivo no existe, retorna una lista vacía
+        } catch (ClassNotFoundException e) {
+            throw new IOException("Error al leer el archivo de usuarios", e);
         }
-        List<User> users = mapper.readValue(file, new TypeReference<List<User>>() {});
-        return new ArrayList<>(users);  // Envuelve en una lista mutable
+        return users;
     }
 
     public void writeUsersToFile(List<User> users) throws IOException {
-        mapper.writeValue(new File(filePath), users);
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(FILE_NAME))) {
+            oos.writeObject(users);
+        }
     }
 }

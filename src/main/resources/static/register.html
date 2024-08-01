@@ -30,7 +30,8 @@
             margin: 10px 0 5px;
         }
         input[type="text"],
-        input[type="email"] {
+        input[type="email"],
+        input[type="password"] {
             width: calc(100% - 22px); /* Ajustar ancho de la caja de texto */
             padding: 10px;
             margin-bottom: 15px;
@@ -45,9 +46,16 @@
             border-radius: 5px;
             cursor: pointer;
             transition: background-color 0.3s;
+            margin-right: 10px; /* Espacio entre los botones */
         }
         button:hover {
             background-color: #0056b3;
+        }
+        .cancel-button {
+            background-color: #dc3545; /* Color de fondo del botón cancelar */
+        }
+        .cancel-button:hover {
+            background-color: #c82333; /* Color al pasar el mouse sobre el botón cancelar */
         }
     </style>
 </head>
@@ -60,7 +68,11 @@
     <label for="email">Email:</label>
     <input type="email" id="email" name="email" required>
 
+    <label for="password">Contraseña:</label>
+    <input type="password" id="password" name="password" required>
+
     <button type="submit">Registrar Usuario</button>
+    <button type="button" class="cancel-button" onclick="location.href='index.html'">Cancelar</button>
 </form>
 
 <script>
@@ -69,13 +81,14 @@
 
         const name = document.getElementById('name').value;
         const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
 
         fetch('/api/users', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ name, email })
+            body: JSON.stringify({ name, email, password })
         })
             .then(response => {
                 if (response.ok) {

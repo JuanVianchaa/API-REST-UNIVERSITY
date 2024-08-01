@@ -45,7 +45,6 @@ public class UserController {
         }
     }
 
-
     @PostMapping
     public ResponseEntity<User> addUser(@RequestBody User user) {
         try {
@@ -55,29 +54,28 @@ public class UserController {
             fileService.writeUsersToFile(users);
             return ResponseEntity.status(201).body(user);
         } catch (IOException e) {
-            e.printStackTrace(); // Imprime el error en los logs
+            e.printStackTrace();
             return ResponseEntity.status(500).build();
         }
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> loginUser(@RequestBody User user) {
+    public ResponseEntity<Object> loginUser(@RequestBody User user) {
         try {
             List<User> users = fileService.readUsersFromFile();
             Optional<User> matchingUser = users.stream()
-                    .filter(u -> u.getName().equals(user.getName()) && u.getEmail().equals(user.getEmail()))
+                    .filter(u -> u.getEmail().equals(user.getEmail()) && u.getPassword().equals(user.getPassword()))
                     .findFirst();
             if (matchingUser.isPresent()) {
-                return ResponseEntity.ok().body("Inicio de sesión exitoso");
+                return ResponseEntity.ok(matchingUser.get());
             } else {
-                return ResponseEntity.status(401).body("Nombre o email incorrectos");
+                return ResponseEntity.status(401).body("Email o contraseña incorrectos");
             }
         } catch (IOException e) {
             e.printStackTrace();
             return ResponseEntity.status(500).build();
         }
     }
-
 
     @PutMapping("/{id}")
     public ResponseEntity<User> updateUser(@PathVariable String id, @RequestBody User user) {
@@ -88,6 +86,9 @@ public class UserController {
                 User updatedUser = existingUser.get();
                 updatedUser.setName(user.getName());
                 updatedUser.setEmail(user.getEmail());
+                if (user.getPassword() != null) {
+                    updatedUser.setPassword(user.getPassword());
+                }
                 fileService.writeUsersToFile(users);
                 return ResponseEntity.ok(updatedUser);
             } else {
@@ -106,11 +107,10 @@ public class UserController {
                 fileService.writeUsersToFile(users);
                 return ResponseEntity.status(204).build();
             } else {
-                return ResponseEntity.status(404).build(); // Usuario no encontrado
+                return ResponseEntity.status(404).build();
             }
         } catch (IOException e) {
-            return ResponseEntity.status(500).build(); // Error en el servidor
+            return ResponseEntity.status(500).build();
         }
     }
-
 }

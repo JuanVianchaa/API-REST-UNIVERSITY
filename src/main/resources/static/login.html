@@ -29,8 +29,8 @@
             display: block;
             margin: 10px 0 5px;
         }
-        input[type="text"],
-        input[type="email"] {
+        input[type="email"],
+        input[type="password"] {
             width: calc(100% - 22px); /* Ajustar ancho de la caja de texto */
             padding: 10px;
             margin-bottom: 15px;
@@ -38,8 +38,8 @@
             border-radius: 4px;
             transition: border-color 0.3s;
         }
-        input[type="text"]:focus,
-        input[type="email"]:focus {
+        input[type="email"]:focus,
+        input[type="password"]:focus {
             border-color: #007bff; /* Color del borde al enfocar */
             outline: none; /* Sin borde de enfoque predeterminado */
         }
@@ -51,48 +51,61 @@
             border-radius: 5px;
             cursor: pointer;
             transition: background-color 0.3s;
+            margin-right: 10px; /* Espacio entre los botones */
         }
         button:hover {
             background-color: #0056b3;
+        }
+        .cancel-button {
+            background-color: #dc3545; /* Color de fondo del botón cancelar */
+        }
+        .cancel-button:hover {
+            background-color: #c82333; /* Color al pasar el mouse sobre el botón cancelar */
         }
     </style>
 </head>
 <body>
 <h1>Iniciar Sesión</h1>
 <form id="loginForm">
-    <label for="name">Nombre:</label>
-    <input type="text" id="name" name="name" required>
-
     <label for="email">Email:</label>
     <input type="email" id="email" name="email" required>
 
+    <label for="password">Contraseña:</label>
+    <input type="password" id="password" name="password" required>
+
     <button type="submit">Iniciar Sesión</button>
+    <button type="button" class="cancel-button" onclick="location.href='index.html'">Cancelar</button>
 </form>
 
 <script>
     document.getElementById('loginForm').addEventListener('submit', function(event) {
         event.preventDefault();
 
-        const name = document.getElementById('name').value;
         const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
 
         fetch('/api/users/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ name, email })
+            body: JSON.stringify({ email, password })
         })
             .then(response => {
-                if (response.ok) {
-                    // Almacena la información del usuario en el almacenamiento local
-                    localStorage.setItem('loggedInUser', JSON.stringify({ name, email }));
-                    window.location.href = 'menu.html'; // Redirige al menú principal
-                } else {
-                    alert('Error al iniciar sesión');
+                if (!response.ok) {
+                    return response.text().then(text => {
+                        throw new Error(text || 'Email o contraseña incorrectos.'); // Lanza un error con el mensaje de error del servidor
+                    });
                 }
+                return response.json(); // Procesa la respuesta JSON
             })
-            .catch(error => console.error('Error:', error));
+            .then(data => {
+                localStorage.setItem('loggedInUser', JSON.stringify(data));
+                window.location.href = 'menu.html'; // Redirige al menú principal
+            })
+            .catch(error => {
+                alert(error.message); // Muestra una alerta con el mensaje de error
+            });
     });
 </script>
 </body>
