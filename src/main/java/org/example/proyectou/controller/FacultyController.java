@@ -2,7 +2,6 @@ package org.example.proyectou.controller;
 
 import org.example.proyectou.model.Faculty;
 import org.example.proyectou.service.FacultyFileService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,8 +13,11 @@ import java.util.Optional;
 @RequestMapping("/api/faculties")
 public class FacultyController {
 
-    @Autowired
-    private FacultyFileService fileService;
+    private final FacultyFileService fileService;
+
+    public FacultyController(FacultyFileService fileService) {
+        this.fileService = fileService;
+    }
 
     @GetMapping
     public ResponseEntity<List<Faculty>> getAllFaculties() {
@@ -36,7 +38,7 @@ public class FacultyController {
             if (faculty.isPresent()) {
                 return ResponseEntity.ok(faculty.get());
             } else {
-                return ResponseEntity.status(404).build(); // Facultad no encontrada
+                return ResponseEntity.status(404).build();
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -47,7 +49,7 @@ public class FacultyController {
     @PostMapping
     public ResponseEntity<Faculty> addFaculty(@RequestBody Faculty faculty) {
         try {
-            fileService.addFaculty(faculty); // Llama al método del servicio para agregar la facultad
+            fileService.addFaculty(faculty);
             return ResponseEntity.status(201).body(faculty);
         } catch (IOException e) {
             e.printStackTrace();
@@ -62,13 +64,13 @@ public class FacultyController {
             Optional<Faculty> existingFaculty = faculties.stream().filter(f -> f.getId().equals(id)).findFirst();
             if (existingFaculty.isPresent()) {
                 Faculty updatedFaculty = existingFaculty.get();
-                updatedFaculty.setName(faculty.getName()); // Actualizar el nombre
+                updatedFaculty.setName(faculty.getName());
                 updatedFaculty.setDepartment(faculty.getDepartment());
                 updatedFaculty.setEmail(faculty.getEmail());
                 fileService.writeFacultiesToFile(faculties);
                 return ResponseEntity.ok(updatedFaculty);
             } else {
-                return ResponseEntity.status(404).build(); // Facultad no encontrada
+                return ResponseEntity.status(404).build();
             }
         } catch (IOException e) {
             return ResponseEntity.status(500).build();
@@ -81,9 +83,9 @@ public class FacultyController {
             List<Faculty> faculties = fileService.readFacultiesFromFile();
             if (faculties.removeIf(f -> f.getId().equals(id))) {
                 fileService.writeFacultiesToFile(faculties);
-                return ResponseEntity.status(204).build(); // Eliminación exitosa
+                return ResponseEntity.status(204).build();
             } else {
-                return ResponseEntity.status(404).build(); // Facultad no encontrada
+                return ResponseEntity.status(404).build();
             }
         } catch (IOException e) {
             return ResponseEntity.status(500).build();

@@ -13,29 +13,31 @@ import java.util.List;
 
 @Service
 public class UniversityFileService {
-    private final String universitiesFilePath = "universities.json"; // Ruta del archivo JSON de universidades
-    private final String facultiesFilePath = "faculties.json"; // Ruta del archivo JSON de facultades
-    private final ObjectMapper mapper = new ObjectMapper(); // Objeto para manejar JSON
+
+    private final String universitiesFilePath = "universities.json";
+    private final String facultiesFilePath = "faculties.json";
+    private final ObjectMapper mapper = new ObjectMapper();
 
     public List<University> readUniversitiesFromFile() throws IOException {
         File file = new File(universitiesFilePath);
         if (!file.exists()) {
-            file.createNewFile(); // Crea el archivo si no existe
-            return new ArrayList<>(); // Devuelve una lista vacía
+            file.createNewFile();
+            return new ArrayList<>();
         }
-        return mapper.readValue(file, new TypeReference<List<University>>() {}); // Devuelve la lista de universidades
+        return mapper.readValue(file, new TypeReference<List<University>>() {
+        });
     }
 
     public void writeUniversitiesToFile(List<University> universities) throws IOException {
-        mapper.writeValue(new File(universitiesFilePath), universities); // Escribe la lista en el archivo JSON
+        mapper.writeValue(new File(universitiesFilePath), universities);
     }
 
-    // Método para leer facultades desde el archivo JSON
     public List<Faculty> readFacultiesFromFile() throws IOException {
         File file = new File(facultiesFilePath);
         if (!file.exists()) {
-            throw new IOException("Faculties file not found"); // Manejo de error si el archivo no existe
+            throw new IOException("Faculties file not found");
         }
-        return mapper.readValue(file, new TypeReference<List<Faculty>>() {}); // Devuelve la lista de facultades
+        return mapper.readValue(file, new TypeReference<List<Faculty>>() {
+        });
     }
 }

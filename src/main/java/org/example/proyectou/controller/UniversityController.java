@@ -16,13 +16,16 @@ import java.util.UUID;
 @RequestMapping("/api/universities")
 public class UniversityController {
 
-    @Autowired
-    private UniversityFileService fileService;
+    private final UniversityFileService fileService;
+
+    public UniversityController(UniversityFileService fileService) {
+        this.fileService = fileService;
+    }
 
     @GetMapping
     public ResponseEntity<List<University>> getAllUniversities() {
         try {
-            List<University> universities = fileService.readUniversitiesFromFile(); // Método para leer universidades del archivo
+            List<University> universities = fileService.readUniversitiesFromFile();
             return ResponseEntity.ok(universities);
         } catch (IOException e) {
             e.printStackTrace();
@@ -38,7 +41,7 @@ public class UniversityController {
             if (university.isPresent()) {
                 return ResponseEntity.ok(university.get());
             } else {
-                return ResponseEntity.status(404).build(); // Universidad no encontrada
+                return ResponseEntity.status(404).build();
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -50,9 +53,9 @@ public class UniversityController {
     public ResponseEntity<University> addUniversity(@RequestBody University university) {
         try {
             List<University> universities = fileService.readUniversitiesFromFile();
-            university.setId(UUID.randomUUID().toString()); // Genera un ID único para la universidad
+            university.setId(UUID.randomUUID().toString());
             universities.add(university);
-            fileService.writeUniversitiesToFile(universities); // Método para guardar universidades en el archivo
+            fileService.writeUniversitiesToFile(universities);
             return ResponseEntity.status(201).body(university);
         } catch (IOException e) {
             e.printStackTrace();
@@ -75,7 +78,7 @@ public class UniversityController {
                 fileService.writeUniversitiesToFile(universities);
                 return ResponseEntity.ok(updatedUniversity);
             } else {
-                return ResponseEntity.status(404).build(); // Universidad no encontrada
+                return ResponseEntity.status(404).build();
             }
         } catch (IOException e) {
             return ResponseEntity.status(500).build();
@@ -88,9 +91,9 @@ public class UniversityController {
             List<University> universities = fileService.readUniversitiesFromFile();
             if (universities.removeIf(u -> u.getId().equals(id))) {
                 fileService.writeUniversitiesToFile(universities);
-                return ResponseEntity.status(204).build(); // Eliminación exitosa
+                return ResponseEntity.status(204).build();
             } else {
-                return ResponseEntity.status(404).build(); // Universidad no encontrada
+                return ResponseEntity.status(404).build();
             }
         } catch (IOException e) {
             return ResponseEntity.status(500).build();
@@ -100,11 +103,11 @@ public class UniversityController {
     @GetMapping("/faculties")
     public ResponseEntity<List<Faculty>> getAllFaculties() {
         try {
-            List<Faculty> faculties = fileService.readFacultiesFromFile(); // Lee facultades desde el archivo
+            List<Faculty> faculties = fileService.readFacultiesFromFile();
             return ResponseEntity.ok(faculties);
         } catch (IOException e) {
             e.printStackTrace();
-            return ResponseEntity.status(500).build(); // Manejo de error
+            return ResponseEntity.status(500).build();
         }
     }
 }

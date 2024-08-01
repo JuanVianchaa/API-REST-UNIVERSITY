@@ -9,30 +9,32 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID; // Importar UUID para generar IDs únicos
+import java.util.UUID;
 
 @Service
 public class FacultyFileService {
-    private final String facultiesFilePath = "faculties.json"; // Ruta del archivo JSON de facultades
-    private final ObjectMapper mapper = new ObjectMapper(); // Objeto para manejar JSON
+
+    private final String facultiesFilePath = "faculties.json";
+    private final ObjectMapper mapper = new ObjectMapper();
 
     public List<Faculty> readFacultiesFromFile() throws IOException {
         File file = new File(facultiesFilePath);
         if (!file.exists()) {
-            file.createNewFile(); // Crea el archivo si no existe
-            return new ArrayList<>(); // Devuelve una lista vacía
+            file.createNewFile();
+            return new ArrayList<>();
         }
-        return mapper.readValue(file, new TypeReference<List<Faculty>>() {}); // Devuelve la lista de facultades
+        return mapper.readValue(file, new TypeReference<List<Faculty>>() {
+        });
     }
 
     public void writeFacultiesToFile(List<Faculty> faculties) throws IOException {
-        mapper.writeValue(new File(facultiesFilePath), faculties); // Escribe la lista en el archivo JSON
+        mapper.writeValue(new File(facultiesFilePath), faculties);
     }
 
     public void addFaculty(Faculty faculty) throws IOException {
         List<Faculty> faculties = readFacultiesFromFile();
-        faculty.setId(UUID.randomUUID().toString()); // Genera un ID único
-        faculties.add(faculty); // Agrega la nueva facultad
+        faculty.setId(UUID.randomUUID().toString());
+        faculties.add(faculty);
         writeFacultiesToFile(faculties);
     }
 }
