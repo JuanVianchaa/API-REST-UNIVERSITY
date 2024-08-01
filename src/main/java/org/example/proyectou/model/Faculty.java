@@ -1,12 +1,14 @@
 package org.example.proyectou.model;
 
 public class Faculty {
+    private String id; // Campo para el ID
     private String name;
     private String department;
     private String email;
 
     // Constructor
-    public Faculty(String name, String department, String email) {
+    public Faculty(String id, String name, String department, String email) {
+        this.id = id;
         this.name = name;
         this.department = department;
         this.email = email;
@@ -16,6 +18,14 @@ public class Faculty {
     }
 
     // Getters and Setters
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public String getName() {
         return name;
     }
@@ -43,7 +53,8 @@ public class Faculty {
     @Override
     public String toString() {
         return "Faculty{" +
-                "name='" + name + '\'' +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
                 ", department='" + department + '\'' +
                 ", email='" + email + '\'' +
                 '}';

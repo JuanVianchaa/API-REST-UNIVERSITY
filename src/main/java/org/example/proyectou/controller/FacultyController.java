@@ -28,11 +28,11 @@ public class FacultyController {
         }
     }
 
-    @GetMapping("/{name}")
-    public ResponseEntity<Faculty> getFacultyByName(@PathVariable String name) {
+    @GetMapping("/{id}")
+    public ResponseEntity<Faculty> getFacultyById(@PathVariable String id) {
         try {
             List<Faculty> faculties = fileService.readFacultiesFromFile();
-            Optional<Faculty> faculty = faculties.stream().filter(f -> f.getName().equalsIgnoreCase(name)).findFirst();
+            Optional<Faculty> faculty = faculties.stream().filter(f -> f.getId().equals(id)).findFirst();
             if (faculty.isPresent()) {
                 return ResponseEntity.ok(faculty.get());
             } else {
@@ -47,9 +47,7 @@ public class FacultyController {
     @PostMapping
     public ResponseEntity<Faculty> addFaculty(@RequestBody Faculty faculty) {
         try {
-            List<Faculty> faculties = fileService.readFacultiesFromFile();
-            faculties.add(faculty); // Agrega la nueva facultad
-            fileService.writeFacultiesToFile(faculties);
+            fileService.addFaculty(faculty); // Llama al método del servicio para agregar la facultad
             return ResponseEntity.status(201).body(faculty);
         } catch (IOException e) {
             e.printStackTrace();
@@ -57,13 +55,14 @@ public class FacultyController {
         }
     }
 
-    @PutMapping("/{name}")
-    public ResponseEntity<Faculty> updateFaculty(@PathVariable String name, @RequestBody Faculty faculty) {
+    @PutMapping("/{id}")
+    public ResponseEntity<Faculty> updateFaculty(@PathVariable String id, @RequestBody Faculty faculty) {
         try {
             List<Faculty> faculties = fileService.readFacultiesFromFile();
-            Optional<Faculty> existingFaculty = faculties.stream().filter(f -> f.getName().equalsIgnoreCase(name)).findFirst();
+            Optional<Faculty> existingFaculty = faculties.stream().filter(f -> f.getId().equals(id)).findFirst();
             if (existingFaculty.isPresent()) {
                 Faculty updatedFaculty = existingFaculty.get();
+                updatedFaculty.setName(faculty.getName()); // Actualizar el nombre
                 updatedFaculty.setDepartment(faculty.getDepartment());
                 updatedFaculty.setEmail(faculty.getEmail());
                 fileService.writeFacultiesToFile(faculties);
@@ -76,11 +75,11 @@ public class FacultyController {
         }
     }
 
-    @DeleteMapping("/{name}")
-    public ResponseEntity<Void> deleteFaculty(@PathVariable String name) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteFaculty(@PathVariable String id) {
         try {
             List<Faculty> faculties = fileService.readFacultiesFromFile();
-            if (faculties.removeIf(f -> f.getName().equalsIgnoreCase(name))) {
+            if (faculties.removeIf(f -> f.getId().equals(id))) {
                 fileService.writeFacultiesToFile(faculties);
                 return ResponseEntity.status(204).build(); // Eliminación exitosa
             } else {

@@ -54,6 +54,7 @@
 <table>
     <thead>
     <tr>
+        <th>ID</th> <!-- Nueva columna para ID -->
         <th>Nombre</th>
         <th>Departamento</th>
         <th>Email</th>
@@ -79,12 +80,13 @@
             faculties.forEach(faculty => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
+                  <td>${faculty.id}</td> <!-- Mostrar ID -->
                   <td>${faculty.name}</td>
                   <td>${faculty.department}</td>
                   <td>${faculty.email}</td>
                   <td>
-                      <button onclick="redirectToEdit('${faculty.name}')">Editar</button>
-                      <button onclick="deleteFaculty('${faculty.name}')">Eliminar</button>
+                      <button onclick="redirectToEdit('${faculty.id}')">Editar</button>
+                      <button onclick="deleteFaculty('${faculty.id}')">Eliminar</button>
                   </td>
               `;
                 tableBody.appendChild(row);
@@ -98,14 +100,14 @@
     }
 
     // Redirigir a la página de edición
-    function redirectToEdit(facultyName) {
-        window.location.href = `edit-faculty.html?name=${encodeURIComponent(facultyName)}`;
+    function redirectToEdit(facultyId) {
+        window.location.href = `edit-faculty.html?id=${encodeURIComponent(facultyId)}`; // Usar ID en lugar de nombre
     }
 
     // Función para eliminar una facultad
-    function deleteFaculty(facultyName) {
+    function deleteFaculty(facultyId) { // Cambiar a ID
         if (confirm('¿Estás seguro de que deseas eliminar esta facultad?')) {
-            fetch(`/api/faculties/${encodeURIComponent(facultyName)}`, {
+            fetch(`/api/faculties/${encodeURIComponent(facultyId)}`, { // Usar ID
                 method: 'DELETE'
             })
                 .then(response => {

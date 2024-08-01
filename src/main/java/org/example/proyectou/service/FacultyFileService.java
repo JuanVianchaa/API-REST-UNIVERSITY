@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID; // Importar UUID para generar IDs únicos
 
 @Service
 public class FacultyFileService {
@@ -26,5 +27,12 @@ public class FacultyFileService {
 
     public void writeFacultiesToFile(List<Faculty> faculties) throws IOException {
         mapper.writeValue(new File(facultiesFilePath), faculties); // Escribe la lista en el archivo JSON
+    }
+
+    public void addFaculty(Faculty faculty) throws IOException {
+        List<Faculty> faculties = readFacultiesFromFile();
+        faculty.setId(UUID.randomUUID().toString()); // Genera un ID único
+        faculties.add(faculty); // Agrega la nueva facultad
+        writeFacultiesToFile(faculties);
     }
 }
