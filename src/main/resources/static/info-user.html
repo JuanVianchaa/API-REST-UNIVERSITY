@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Información del Usuario</title>
+</head>
+<body>
+<h1>Información del Usuario</h1>
+<div id="userInfo"></div>
+<button onclick="window.location.href='menu.html'">Volver al Menú</button>
+
+<script>
+    // Cargar la información del usuario desde el almacenamiento local
+    const user = JSON.parse(localStorage.getItem('loggedInUser'));
+    if (user) {
+        document.getElementById('userInfo').innerHTML = `
+            <p><strong>Nombre:</strong> ${user.name}</p>
+            <p><strong>Email:</strong> ${user.email}</p>
+        `;
+    } else {
+        alert('No has iniciado sesión. Redirigiendo al inicio...');
+        window.location.href = 'index.html'; // Redirigir al inicio si no hay sesión activa
+    }
+</script>
+</body>
+</html>

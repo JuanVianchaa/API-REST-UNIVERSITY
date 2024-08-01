@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Iniciar Sesión</title>
+    <title>Agregar Universidad</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -17,7 +17,7 @@
         }
         form {
             background-color: white;
-            padding: 30px;
+            padding: 20px;
             border-radius: 5px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             display: inline-block;
@@ -29,19 +29,12 @@
             display: block;
             margin: 10px 0 5px;
         }
-        input[type="text"],
-        input[type="email"] {
+        input[type="text"] {
             width: calc(100% - 22px); /* Ajustar ancho de la caja de texto */
             padding: 10px;
             margin-bottom: 15px;
             border: 1px solid #ccc;
             border-radius: 4px;
-            transition: border-color 0.3s;
-        }
-        input[type="text"]:focus,
-        input[type="email"]:focus {
-            border-color: #007bff; /* Color del borde al enfocar */
-            outline: none; /* Sin borde de enfoque predeterminado */
         }
         button {
             padding: 10px 15px;
@@ -58,38 +51,50 @@
     </style>
 </head>
 <body>
-<h1>Iniciar Sesión</h1>
-<form id="loginForm">
+<h1>Agregar Nueva Universidad</h1>
+<form id="addForm">
     <label for="name">Nombre:</label>
     <input type="text" id="name" name="name" required>
 
-    <label for="email">Email:</label>
-    <input type="email" id="email" name="email" required>
+    <label for="address">Dirección:</label>
+    <input type="text" id="address" name="address" required>
 
-    <button type="submit">Iniciar Sesión</button>
+    <label for="faculties">Facultades:</label>
+    <input type="text" id="faculties" name="faculties" required>
+
+    <label for="numberStudents">Número de Estudiantes:</label>
+    <input type="text" id="numberStudents" name="numberStudents" required>
+
+    <label for="program">Programa:</label>
+    <input type="text" id="program" name="program" required>
+
+    <button type="submit">Agregar Universidad</button>
 </form>
 
 <script>
-    document.getElementById('loginForm').addEventListener('submit', function(event) {
+    // Manejar la adición de nueva universidad al enviar el formulario
+    document.getElementById('addForm').addEventListener('submit', function(event) {
         event.preventDefault();
 
         const name = document.getElementById('name').value;
-        const email = document.getElementById('email').value;
+        const address = document.getElementById('address').value;
+        const faculties = document.getElementById('faculties').value;
+        const numberStudents = document.getElementById('numberStudents').value;
+        const program = document.getElementById('program').value;
 
-        fetch('/api/users/login', {
+        fetch('/api/universities', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ name, email })
+            body: JSON.stringify({ name, address, faculties, numberStudents, program })
         })
             .then(response => {
                 if (response.ok) {
-                    // Almacena la información del usuario en el almacenamiento local
-                    localStorage.setItem('loggedInUser', JSON.stringify({ name, email }));
-                    window.location.href = 'menu.html'; // Redirige al menú principal
+                    alert('Universidad agregada');
+                    window.location.href = 'universities.html'; // Redirige a la lista de universidades
                 } else {
-                    alert('Error al iniciar sesión');
+                    alert('Error al agregar la universidad');
                 }
             })
             .catch(error => console.error('Error:', error));

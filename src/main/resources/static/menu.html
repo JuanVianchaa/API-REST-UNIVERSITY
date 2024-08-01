@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menú Principal</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+        }
+        ul {
+            list-style-type: none; /* Eliminar los puntos de la lista */
+            padding: 0;
+        }
+        li {
+            margin: 20px 0; /* Espaciado entre elementos de la lista */
+        }
+        a {
+            display: inline-block; /* Permite ajustar el tamaño del enlace */
+            padding: 15px 30px; /* Tamaño uniforme para los botones */
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            width: 200px; /* Ancho fijo para todos los botones */
+        }
+        a:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+<h1>Menú Principal</h1>
+<ul>
+    <li><a href="universities.html">Administrar Universidades</a></li>
+    <li><a href="info-user.html">Mirar Información</a></li>
+    <li><a href="index.html" onclick="logout()">Terminar Sesión</a></li>
+</ul>
+
+<script>
+    // Almacena la información del usuario en el almacenamiento local
+    const user = JSON.parse(localStorage.getItem('loggedInUser'));
+    if (!user) {
+        alert('No has iniciado sesión. Redirigiendo al inicio...');
+        window.location.href = 'index.html'; // Redirigir al inicio si no hay sesión activa
+    }
+
+    function logout() {
+        localStorage.removeItem('loggedInUser'); // Elimina la información del usuario
+    }
+</script>
+</body>
+</html>

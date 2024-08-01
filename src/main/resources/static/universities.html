@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Universidades</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse; /* Colapsa los bordes */
+            margin: 20px 0; /* Margen superior e inferior para la tabla */
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ccc;
+            text-align: center; /* Centrar texto en las celdas */
+        }
+        th {
+            background-color: #007bff; /* Color de fondo para encabezados */
+            color: white; /* Color de texto para encabezados */
+        }
+        button {
+            padding: 8px 12px; /* Tamaño de los botones */
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin: 5px; /* Margen para separar los botones */
+            width: 100px; /* Ancho fijo para los botones */
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        /* Botón de agregar y volver al menú */
+        .action-button {
+            margin: 20px; /* Espaciado entre botones */
+        }
+    </style>
+</head>
+<body>
+<h1>Lista de Universidades</h1>
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Dirección</th>
+        <th>Facultades</th>
+        <th>Número de Estudiantes</th>
+        <th>Programa</th>
+        <th>Acciones</th>
+    </tr>
+    </thead>
+    <tbody id="universityTableBody">
+    </tbody>
+</table>
+
+<!-- Botones para agregar nueva universidad y volver al menú -->
+<div class="action-button">
+    <button onclick="redirectToAdd()">Agregar Universidad</button>
+    <button onclick="redirectToMenu()">Volver al menú</button>
+</div>
+
+<script>
+    // Cargar todas las universidades
+    fetch('/api/universities')
+        .then(response => response.json())
+        .then(universities => {
+            const tableBody = document.getElementById('universityTableBody');
+            universities.forEach(university => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                  <td>${university.id}</td>
+                  <td>${university.name}</td>
+                  <td>${university.address}</td>
+                  <td>${university.faculties}</td>
+                  <td>${university.numberStudents}</td>
+                  <td>${university.program}</td>
+                  <td>
+                      <button onclick="redirectToEdit('${university.id}')">Editar</button>
+                      <button onclick="deleteUniversity('${university.id}')">Eliminar</button>
+                  </td>
+              `;
+                tableBody.appendChild(row);
+            });
+        })
+        .catch(error => console.error('Error:', error));
+
+    // Redirigir a la página de agregar nueva universidad
+    function redirectToAdd() {
+        window.location.href = 'add-university.html';
+    }
+
+    // Redirigir a la página de edición
+    function redirectToEdit(universityId) {
+        window.location.href = `edit-university.html?id=${universityId}`;
+    }
+
+    // Función para eliminar una universidad
+    function deleteUniversity(universityId) {
+        if (confirm('¿Estás seguro de que deseas eliminar esta universidad?')) {
+            fetch(`/api/universities/${universityId}`, {
+                method: 'DELETE'
+            })
+                .then(response => {
+                    if (response.ok) {
+                        alert('Universidad eliminada');
+                        window.location.reload(); // Recarga la página para actualizar la lista
+                    } else {
+                        alert('Error al eliminar la universidad');
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+    }
+
+    // Redirigir a la página de menú
+    function redirectToMenu() {
+        window.location.href = 'menu.html'; // Cambia 'menu.html' al nombre de tu archivo de menú
+    }
+</script>
+</body>
+</html>
