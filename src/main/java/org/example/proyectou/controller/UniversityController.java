@@ -1,6 +1,7 @@
 package org.example.proyectou.controller;
 
 import org.example.proyectou.model.University;
+import org.example.proyectou.model.Faculty;
 import org.example.proyectou.service.UniversityFileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -93,6 +94,17 @@ public class UniversityController {
             }
         } catch (IOException e) {
             return ResponseEntity.status(500).build();
+        }
+    }
+
+    @GetMapping("/faculties")
+    public ResponseEntity<List<Faculty>> getAllFaculties() {
+        try {
+            List<Faculty> faculties = fileService.readFacultiesFromFile(); // Lee facultades desde el archivo
+            return ResponseEntity.ok(faculties);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).build(); // Manejo de error
         }
     }
 }

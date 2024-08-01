@@ -29,8 +29,9 @@
             display: block;
             margin: 10px 0 5px;
         }
-        input[type="text"] {
-            width: calc(100% - 22px); /* Ajustar ancho de la caja de texto */
+        input[type="text"],
+        select {
+            width: calc(100% - 22px); /* Ajustar ancho de la caja de texto y selector */
             padding: 10px;
             margin-bottom: 15px;
             border: 1px solid #ccc;
@@ -60,7 +61,9 @@
     <input type="text" id="address" name="address" required>
 
     <label for="faculties">Facultades:</label>
-    <input type="text" id="faculties" name="faculties" required>
+    <select id="faculties" name="faculties" required>
+        <!-- Las opciones se llenarán dinámicamente con JavaScript -->
+    </select>
 
     <label for="numberStudents">Número de Estudiantes:</label>
     <input type="text" id="numberStudents" name="numberStudents" required>
@@ -72,13 +75,29 @@
 </form>
 
 <script>
+    // Llenar el selector de facultades al cargar la página
+    window.onload = function() {
+        fetch('/api/universities/faculties')
+            .then(response => response.json())
+            .then(faculties => {
+                const facultiesSelect = document.getElementById('faculties');
+                faculties.forEach(faculty => {
+                    const option = document.createElement('option');
+                    option.value = faculty.name; // Almacena el nombre
+                    option.textContent = faculty.name; // Muestra el nombre
+                    facultiesSelect.appendChild(option);
+                });
+            })
+            .catch(error => console.error('Error al cargar las facultades:', error));
+    };
+
     // Manejar la adición de nueva universidad al enviar el formulario
     document.getElementById('addForm').addEventListener('submit', function(event) {
         event.preventDefault();
 
         const name = document.getElementById('name').value;
         const address = document.getElementById('address').value;
-        const faculties = document.getElementById('faculties').value;
+        const faculties = document.getElementById('faculties').value; // Obtener el nombre de la facultad
         const numberStudents = document.getElementById('numberStudents').value;
         const program = document.getElementById('program').value;
 

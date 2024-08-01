@@ -1,23 +1,28 @@
 package org.example.proyectou.model;
 
-public class University {
+import java.util.List;
 
+public class University {
     private String id;
     private String name;
     private String address;
-    private String faculties;
-    private String numberStudents;
-    private String Program;
+    private String faculties; // Asegúrate de que sea una lista
+    private int numberStudents;
+    private String program;
 
-    public University(String id, String name, String address, String faculties, String numberStudents, String program) {
+    // Constructor
+
+
+    public University(String id, String name, String address, String faculties, int numberStudents, String program) {
         this.id = id;
         this.name = name;
         this.address = address;
         this.faculties = faculties;
         this.numberStudents = numberStudents;
-        Program = program;
+        this.program = program;
     }
 
+    // Constructor vacío
     public University() {
     }
 
@@ -53,30 +58,31 @@ public class University {
         this.faculties = faculties;
     }
 
-    public String getNumberStudents() {
+    public int getNumberStudents() {
         return numberStudents;
     }
 
-    public void setNumberStudents(String numberStudents) {
+    public void setNumberStudents(int numberStudents) {
         this.numberStudents = numberStudents;
     }
 
     public String getProgram() {
-        return Program;
+        return program;
     }
 
     public void setProgram(String program) {
-        Program = program;
+        this.program = program;
     }
 
     @Override
     public String toString() {
         return "University{" +
-                "name='" + name + '\'' +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
                 ", address='" + address + '\'' +
-                ", faculties='" + faculties + '\'' +
+                ", faculties=" + faculties +
                 ", numberStudents=" + numberStudents +
-                ", Program='" + Program + '\'' +
+                ", program='" + program + '\'' +
                 '}';
     }
 }
